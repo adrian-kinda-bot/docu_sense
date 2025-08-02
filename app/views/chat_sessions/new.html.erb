@@ -1,0 +1,117 @@
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">New Chat Session</h1>
+    <p class="mt-2 text-gray-600">Start a conversation with AI about your documents</p>
+  </div>
+
+  <div class="bg-white shadow-sm rounded-xl border border-gray-200">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h3 class="text-lg font-semibold text-gray-900">Chat Configuration</h3>
+    </div>
+
+    <div class="p-6">
+      <%= form_with model: @chat_session, local: true, class: "space-y-6" do |f| %>
+        <% if @chat_session.errors.any? %>
+          <div class="bg-red-50 border border-red-200 rounded-xl p-4">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-800">
+                  <%= pluralize(@chat_session.errors.count, "error") %> prohibited this chat session from being saved:
+                </h3>
+                <div class="mt-2 text-sm text-red-700">
+                  <ul class="list-disc pl-5 space-y-1">
+                    <% @chat_session.errors.full_messages.each do |message| %>
+                      <li><%= message %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+        <div>
+          <%= f.label :title, class: "block text-sm font-medium text-gray-700" %>
+          <%= f.text_field :title, class: "mt-1 block w-full border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm", placeholder: "e.g., HR Policy Questions, Contract Review" %>
+          <p class="mt-1 text-sm text-gray-500">Give your chat session a descriptive title</p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-3">Document Collection</label>
+          <p class="text-sm text-gray-600 mb-4">Select which document collection the AI should use to answer your questions:</p>
+
+          <div class="space-y-3">
+            <% @document_collections.each do |collection| %>
+              <div class="flex items-center p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200">
+                <%= radio_button_tag "chat_session[document_collection_id]", collection.id, false,
+                    id: "collection_#{collection.id}",
+                    class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300",
+                    required: true %>
+                <label for="collection_<%= collection.id %>" class="ml-3 block text-sm font-medium text-gray-700 cursor-pointer flex-1">
+                  <div class="flex items-center">
+                    <span class="truncate"><%= collection.name %></span>
+                    <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      <%= collection.documents.count %> docs
+                    </span>
+                  </div>
+                  <p class="text-xs text-gray-500"><%= collection.description %></p>
+                </label>
+              </div>
+            <% end %>
+          </div>
+
+          <% if @document_collections.empty? %>
+            <div class="text-center py-8 border-2 border-dashed border-gray-300 rounded-xl">
+              <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+              </div>
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">No document collections</h3>
+              <p class="text-gray-600 mb-6">Create a document collection first to start chatting.</p>
+              <div class="flex justify-center">
+                <%= link_to new_document_collection_path, class: "inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-xl text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm hover:shadow-md" do %>
+                  <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                  </svg>
+                  New Collection
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-blue-800">AI Chat Features</h3>
+              <div class="mt-2 text-sm text-blue-700">
+                <ul class="list-disc pl-5 space-y-1">
+                  <li>Ask questions about your uploaded documents</li>
+                  <li>Get answers based on document content</li>
+                  <li>AI will search through selected collections</li>
+                  <li>Conversation history is saved for future reference</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+          <%= link_to "Cancel", chat_sessions_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200" %>
+          <%= f.submit "Start Chat", class: "inline-flex items-center px-6 py-2 border border-transparent text-sm font-medium rounded-xl text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm hover:shadow-md" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

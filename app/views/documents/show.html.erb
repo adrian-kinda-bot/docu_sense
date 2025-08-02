@@ -1,0 +1,152 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="mb-8">
+    <nav class="flex" aria-label="Breadcrumb">
+      <ol class="flex items-center space-x-4">
+        <li>
+          <%= link_to "Collections", document_collections_path, class: "text-gray-400 hover:text-gray-500" %>
+        </li>
+        <li>
+          <div class="flex items-center">
+            <svg class="flex-shrink-0 h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+            </svg>
+            <%= link_to @document.document_collection.name, document_collection_path(@document.document_collection), class: "ml-4 text-gray-400 hover:text-gray-500" %>
+          </div>
+        </li>
+        <li>
+          <div class="flex items-center">
+            <svg class="flex-shrink-0 h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+            </svg>
+            <span class="ml-4 text-sm font-medium text-gray-500"><%= @document.title %></span>
+          </div>
+        </li>
+      </ol>
+    </nav>
+
+    <div class="mt-4 flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900"><%= @document.title %></h1>
+        <p class="mt-2 text-gray-600">Document in <%= @document.document_collection.name %></p>
+      </div>
+      <div class="flex space-x-3">
+        <%= link_to edit_document_path(@document), class: "inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" do %>
+          <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+          </svg>
+          Edit
+        <% end %>
+        <%= link_to document_path(@document), method: :delete, data: { confirm: "Are you sure?" }, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" do %>
+          <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+          </svg>
+          Delete
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Document Details -->
+    <div class="lg:col-span-1">
+      <div class="bg-white shadow rounded-lg">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h3 class="text-lg font-medium text-gray-900">Document Details</h3>
+        </div>
+        <div class="p-6 space-y-4">
+          <div>
+            <dt class="text-sm font-medium text-gray-500">File Type</dt>
+            <dd class="mt-1 text-sm text-gray-900 uppercase"><%= @document.file_type %></dd>
+          </div>
+
+          <div>
+            <dt class="text-sm font-medium text-gray-500">File Size</dt>
+            <dd class="mt-1 text-sm text-gray-900"><%= number_to_human_size(@document.file_size) %></dd>
+          </div>
+
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Status</dt>
+            <dd class="mt-1">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= @document.status == 'processed' ? 'bg-green-100 text-green-800' : @document.status == 'processing' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800' %>">
+                <%= @document.status.humanize %>
+              </span>
+            </dd>
+          </div>
+
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Uploaded</dt>
+            <dd class="mt-1 text-sm text-gray-900"><%= @document.created_at.strftime("%B %d, %Y at %I:%M %p") %></dd>
+          </div>
+
+          <% if @document.processed_at %>
+            <div>
+              <dt class="text-sm font-medium text-gray-500">Processed</dt>
+              <dd class="mt-1 text-sm text-gray-900"><%= @document.processed_at.strftime("%B %d, %Y at %I:%M %p") %></dd>
+            </div>
+          <% end %>
+
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Embeddings</dt>
+            <dd class="mt-1">
+              <% if @document.has_embeddings? %>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                  <svg class="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                  </svg>
+                  <%= pluralize(@document.embedding_count, 'chunk') %> ready
+                </span>
+              <% else %>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                  Not generated
+                </span>
+              <% end %>
+            </dd>
+          </div>
+
+          <% if @document.can_generate_embeddings? %>
+            <div class="pt-4">
+              <%= link_to regenerate_embeddings_document_path(@document), method: :patch, class: "w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" do %>
+                <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+                Generate Embeddings
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Document Content -->
+    <div class="lg:col-span-2">
+      <div class="bg-white shadow rounded-lg">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h3 class="text-lg font-medium text-gray-900">Document Content</h3>
+        </div>
+        <div class="p-6">
+          <% if @document.content.present? %>
+            <div class="prose max-w-none">
+              <pre class="whitespace-pre-wrap text-sm text-gray-900 bg-gray-50 p-4 rounded-md overflow-auto max-h-96" style="text-wrap: auto;"><%= @document.content %></pre>
+            </div>
+          <% else %>
+            <div class="text-center py-8">
+              <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              <h3 class="mt-2 text-sm font-medium text-gray-900">No content available</h3>
+              <p class="mt-1 text-sm text-gray-500">
+                <% if @document.status == 'processing' %>
+                  This document is currently being processed. Please wait a moment and refresh the page.
+                <% elsif @document.status == 'failed' %>
+                  Failed to extract content from this document. Please try uploading it again.
+                <% else %>
+                  Content extraction has not been completed for this document.
+                <% end %>
+              </p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

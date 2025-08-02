@@ -1,0 +1,122 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="mb-8">
+    <div class="flex items-center justify-between">
+      <div>
+        <nav class="flex" aria-label="Breadcrumb">
+          <ol class="flex items-center space-x-4">
+            <li>
+              <%= link_to "Collections", document_collections_path, class: "text-gray-400 hover:text-gray-500" %>
+            </li>
+            <li>
+              <div class="flex items-center">
+                <svg class="flex-shrink-0 h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span class="ml-4 text-sm font-medium text-gray-500"><%= @document_collection.name %></span>
+              </div>
+            </li>
+          </ol>
+        </nav>
+        <h1 class="mt-2 text-3xl font-bold text-gray-900"><%= @document_collection.name %></h1>
+        <p class="mt-2 text-gray-600"><%= @document_collection.description %></p>
+      </div>
+      <div class="flex space-x-3">
+        <%= link_to new_document_collection_document_path(@document_collection), class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" do %>
+          <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+          </svg>
+          Upload Document
+        <% end %>
+        <%= link_to edit_document_collection_path(@document_collection), class: "inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" do %>
+          <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+          </svg>
+          Edit Collection
+        <% end %>
+      </div>
+    </div>
+
+    <div class="mt-4 flex items-center space-x-6 text-sm text-gray-500">
+      <span class="flex items-center">
+        <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        <%= pluralize(@documents.count, 'document') %>
+      </span>
+      <span class="capitalize"><%= @document_collection.category %></span>
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= @document_collection.status == 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' %>">
+        <%= @document_collection.status.humanize %>
+      </span>
+    </div>
+  </div>
+
+  <% if @documents.any? %>
+    <div class="bg-white shadow overflow-hidden sm:rounded-md">
+      <ul class="divide-y divide-gray-200">
+        <% @documents.each do |document| %>
+          <li>
+            <div class="px-4 py-4 sm:px-6">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="flex-shrink-0">
+                    <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                  </div>
+                  <div class="ml-4">
+                    <div class="flex items-center">
+                      <h3 class="text-sm font-medium text-gray-900">
+                        <%= link_to document.title, document_path(document), class: "hover:text-blue-600" %>
+                      </h3>
+                      <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= document.status == 'processed' ? 'bg-green-100 text-green-800' : document.status == 'processing' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800' %>">
+                        <%= document.status.humanize %>
+                      </span>
+                    </div>
+                    <div class="mt-1 flex items-center text-sm text-gray-500">
+                      <span class="truncate"><%= number_to_human_size(document.file_size) %></span>
+                      <span class="mx-1">•</span>
+                      <span class="uppercase"><%= document.file_type %></span>
+                      <span class="mx-1">•</span>
+                      <span>Uploaded <%= time_ago_in_words(document.created_at) %> ago</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <% if document.has_embeddings? %>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      <svg class="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                      </svg>
+                      AI Ready
+                    </span>
+                  <% end %>
+                  <div class="flex space-x-1">
+                    <%= link_to "View", document_path(document), class: "text-blue-600 hover:text-blue-800 text-sm font-medium" %>
+                    <%= link_to "Edit", edit_document_path(document), class: "text-gray-600 hover:text-gray-800 text-sm font-medium" %>
+                    <%= link_to "Delete", document_path(document), method: :delete, data: { confirm: "Are you sure?" }, class: "text-red-600 hover:text-red-800 text-sm font-medium" %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% else %>
+    <div class="text-center py-12">
+      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+      </svg>
+      <h3 class="mt-2 text-sm font-medium text-gray-900">No documents</h3>
+      <p class="mt-1 text-sm text-gray-500">Get started by uploading your first document to this collection.</p>
+      <div class="mt-6">
+        <%= link_to new_document_collection_document_path(@document_collection), class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" do %>
+          <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+          </svg>
+          Upload Document
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
