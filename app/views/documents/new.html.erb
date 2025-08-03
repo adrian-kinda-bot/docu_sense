@@ -34,7 +34,7 @@
     </div>
 
     <div class="p-6">
-      <%= form_with model: [@document_collection, @document], local: true, class: "space-y-6" do |f| %>
+      <%= form_with(model: [@document_collection, @document], url: document_collection_documents_path(@document_collection), local: true, class: "space-y-6", html: { multipart: true }) do |f| %>
         <% if @document.errors.any? %>
           <div class="bg-red-50 border border-red-200 rounded-md p-4">
             <div class="flex">

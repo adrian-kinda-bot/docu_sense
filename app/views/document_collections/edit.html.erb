@@ -10,7 +10,7 @@
     </div>
 
     <div class="p-6">
-      <%= form_with model: @document_collection, local: true, class: "space-y-6" do |f| %>
+      <%= form_with(model: @document_collection, url: document_collection_path(@document_collection), local: true, class: "space-y-6") do |f| %>
         <% if @document_collection.errors.any? %>
           <div class="bg-red-50 border border-red-200 rounded-md p-4">
             <div class="flex">
@@ -47,12 +47,12 @@
 
         <div>
           <%= f.label :category, class: "block text-sm font-medium text-gray-700" %>
-          <%= f.select :category, DocumentCollection.categories.keys.map { |c| [c.humanize, c] }, {}, class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+          <%= f.select :category, Documents::Models::DocumentCollection.categories.keys.map { |c| [c.humanize, c] }, {}, class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
         </div>
 
         <div>
           <%= f.label :status, class: "block text-sm font-medium text-gray-700" %>
-          <%= f.select :status, DocumentCollection.statuses.keys.map { |s| [s.humanize, s] }, {}, class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+          <%= f.select :status, Documents::Models::DocumentCollection.statuses.keys.map { |s| [s.humanize, s] }, {}, class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
         </div>
 
         <div>

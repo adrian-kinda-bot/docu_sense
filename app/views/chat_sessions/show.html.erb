@@ -109,7 +109,7 @@
     <!-- Chat Input -->
     <div class="border-t border-gray-200 bg-gray-50/50 p-6">
       <div id="chat_form">
-        <%= render "chat_messages/form", chat_session: @chat_session, chat_message: ChatMessage.new %>
+        <%= render "chat_messages/form", chat_session: @chat_session, chat_message: Chat::Models::ChatMessage.new %>
       </div>
     </div>
   </div>
@@ -142,8 +142,10 @@
 
 <script>
   // Auto-scroll to bottom of chat messages
-  const chatMessages = document.getElementById('chat_messages');
-  if (chatMessages) {
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-  }
+  (function() {
+    const chatMessages = document.getElementById('chat_messages');
+    if (chatMessages) {
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+  })();
 </script>

@@ -1,4 +1,4 @@
-<%= form_with model: [chat_session, chat_message], local: false, class: "space-y-4" do |f| %>
+<%= form_with model: [chat_session, chat_message], url: chat_session_chat_messages_path(chat_session), local: false, class: "space-y-4" do |f| %>
   <%= f.hidden_field :role, value: 'user' %>
 
   <div class="relative">
