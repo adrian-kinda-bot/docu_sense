@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   resources :documents, only: [ :show, :edit, :update, :destroy ] do
     member do
       patch :regenerate_embeddings
+      get :regenerate_embeddings
     end
   end
 
