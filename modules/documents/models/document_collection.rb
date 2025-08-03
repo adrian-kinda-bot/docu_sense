@@ -4,7 +4,7 @@ module Documents
       # Associations
       belongs_to :customer, class_name: Users::Models::Customer.name
       has_many :documents, class_name: Documents::Models::Document.name, dependent: :destroy
-      has_many :chat_sessions, class_name: Chat::Models::ChatSession.name, dependent: :destroy
+      has_many :chat_sessions, class_name: "Chat::Models::ChatSession", dependent: :destroy
 
       # Validations
       validates :name, presence: true, length: { minimum: 2, maximum: 100 }

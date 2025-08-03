@@ -2,8 +2,8 @@ module Users
   module Models
     class Customer < ApplicationRecord
       # Associations
-      has_many :users, class_name: 'Users::Models::User', dependent: :destroy
-      has_many :document_collections, class_name: 'Documents::Models::DocumentCollection', dependent: :destroy
+      has_many :users, class_name: Users::Models::User.name, dependent: :destroy
+      has_many :document_collections, class_name: Documents::Models::DocumentCollection.name, dependent: :destroy
       has_many :subscriptions, class_name: 'Subscriptions::Models::Subscription', dependent: :destroy
       has_many :documents, through: :document_collections, class_name: 'Documents::Models::Document'
 
@@ -73,4 +73,4 @@ module Users
       end
     end
   end
-end 
+end

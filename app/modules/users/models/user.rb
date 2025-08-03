@@ -9,8 +9,8 @@ module Users
 
       # Associations
       belongs_to :customer, class_name: Users::Models::Customer.name
-      has_many :chat_sessions, class_name: Chat::Models::ChatSession.name, dependent: :destroy
-      has_many :chat_messages, through: :chat_sessions, class_name: Chat::Models::ChatMessage.name
+      has_many :chat_sessions, class_name: "Chat::Models::ChatSession", dependent: :destroy
+      has_many :chat_messages, through: :chat_sessions, class_name: "Chat::Models::ChatMessage"
 
       # Validations
       validates :first_name, presence: true, length: { minimum: 1, maximum: 50 }

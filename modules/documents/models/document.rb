@@ -2,7 +2,7 @@ module Documents
   module Models
     class Document < ApplicationRecord
       # Associations
-      belongs_to :document_collection, class_name: 'Documents::Models::DocumentCollection'
+      belongs_to :document_collection, class_name: Documents::Models::DocumentCollection.name
       has_one :customer, through: :document_collection, class_name: Users::Models::Customer.name
       has_many :document_embeddings, class_name: 'Documents::Models::DocumentEmbedding', dependent: :destroy
       has_one_attached :file

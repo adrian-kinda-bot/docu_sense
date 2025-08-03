@@ -3,7 +3,7 @@ module Chat
     class ChatMessage < ApplicationRecord
       # Associations
       belongs_to :chat_session, class_name: Chat::Models::ChatSession.name
-      belongs_to :user, class_name: 'Users::Models::User'
+      belongs_to :user, class_name: Users::Models::User.name
 
       # Validations
       validates :content, presence: true, length: { minimum: 1, maximum: 4000 }

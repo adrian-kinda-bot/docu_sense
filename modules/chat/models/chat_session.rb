@@ -2,9 +2,9 @@ module Chat
   module Models
     class ChatSession < ApplicationRecord
       # Associations
-      belongs_to :user, class_name: 'Users::Models::User'
-      belongs_to :document_collection, class_name: 'Documents::Models::DocumentCollection'
-      has_many :chat_messages, class_name: 'Chat::Models::ChatMessage', dependent: :destroy
+      belongs_to :user, class_name: Users::Models::User.name
+      belongs_to :document_collection, class_name: Documents::Models::DocumentCollection.name
+      has_many :chat_messages, class_name: Chat::Models::ChatMessage.name, dependent: :destroy
 
       # Validations
       validates :title, presence: true, length: { minimum: 1, maximum: 200 }
