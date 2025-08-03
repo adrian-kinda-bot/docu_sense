@@ -36,7 +36,7 @@ class ChatSessionsController < ApplicationController
   private
 
   def set_chat_session
-    @chat_session = ChatSession.find(params[:id])
+    @chat_session = Chat::Models::ChatSession.find(params[:id])
   end
 
   def authorize_chat_session

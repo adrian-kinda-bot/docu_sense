@@ -44,7 +44,7 @@ class DocumentCollectionsController < ApplicationController
   private
 
   def set_document_collection
-    @document_collection = DocumentCollection.find(params[:id])
+    @document_collection = Documents::Models::DocumentCollection.find(params[:id])
   end
 
   def authorize_collection

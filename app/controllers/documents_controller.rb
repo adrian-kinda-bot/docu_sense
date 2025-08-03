@@ -57,7 +57,7 @@ class DocumentsController < ApplicationController
   end
 
   def set_document
-    @document = Document.find(params[:id])
+    @document = Documents::Models::Document.find(params[:id])
   end
 
   def authorize_document

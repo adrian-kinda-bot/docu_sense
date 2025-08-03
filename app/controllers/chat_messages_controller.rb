@@ -8,7 +8,7 @@ class ChatMessagesController < ApplicationController
 
     if @chat_message.save
       # Process the message and generate AI response
-      ProcessChatMessageJob.perform_later(@chat_message.id)
+      Chat::Jobs::ProcessChatMessageJob.perform_later(@chat_message.id)
 
       respond_to do |format|
         format.turbo_stream {
@@ -37,7 +37,7 @@ class ChatMessagesController < ApplicationController
   private
 
   def set_chat_session
-    @chat_session = ChatSession.find(params[:chat_session_id])
+    @chat_session = Chat::Models::ChatSession.find(params[:chat_session_id])
   end
 
   def authorize_chat_session

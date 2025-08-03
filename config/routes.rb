@@ -1,10 +1,11 @@
 Rails.application.routes.draw do
-  devise_for :users, controllers: {
+  devise_for :users, class_name: Users::Models::User.name, controllers: {
     registrations: "users/registrations",
     sessions: "users/sessions"
   }
 
   # Root route
+  get "/", to: "dashboard#index"
   root "dashboard#index"
 
   # Dashboard
