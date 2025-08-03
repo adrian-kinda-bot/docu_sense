@@ -30,7 +30,7 @@ class DocumentsController < ApplicationController
 
   def update
     if @document.update(document_params)
-      redirect_to @document, notice: "Document was successfully updated."
+      redirect_to document_path(@document), notice: "Document was successfully updated."
     else
       render :edit, status: :unprocessable_entity
     end
@@ -44,9 +44,9 @@ class DocumentsController < ApplicationController
   def regenerate_embeddings
     if @document.can_generate_embeddings?
       @document.schedule_embedding_generation
-      redirect_to @document, notice: "Embedding generation has been scheduled."
+      redirect_to document_path(@document), notice: "Embedding generation has been scheduled."
     else
-      redirect_to @document, alert: "Document is not ready for embedding generation."
+      redirect_to document_path(@document), alert: "Document is not ready for embedding generation."
     end
   end
 
@@ -67,6 +67,7 @@ class DocumentsController < ApplicationController
   end
 
   def document_params
+    params[:document] = params[:documents_models_document]
     params.require(:document).permit(:title, :file)
   end
 end
