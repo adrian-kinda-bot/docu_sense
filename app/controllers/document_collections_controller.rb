@@ -19,7 +19,7 @@ class DocumentCollectionsController < ApplicationController
     @document_collection = current_user.customer.document_collections.build(document_collection_params)
 
     if @document_collection.save
-      redirect_to @document_collection, notice: "Document collection was successfully created."
+      redirect_to document_collection_path(@document_collection), notice: "Document collection was successfully created."
     else
       render :new, status: :unprocessable_entity
     end
@@ -54,6 +54,7 @@ class DocumentCollectionsController < ApplicationController
   end
 
   def document_collection_params
+    params[:document_collection] = params[:documents_models_document_collection]
     params.require(:document_collection).permit(:name, :description, :category, :status, :sort_order)
   end
 end

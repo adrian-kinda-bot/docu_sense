@@ -74,7 +74,7 @@
               <div class="flex text-sm text-gray-600">
                 <label for="document_file" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
                   <span>Upload a file</span>
-                  <%= f.file_field :file, class: "sr-only", accept: ".pdf,.docx,.doc,.txt" %>
+                  <%= f.file_field :file, class: "sr-only", accept: ".pdf,.docx,.doc,.txt", id: "document_file" %>
                 </label>
                 <p class="pl-1">or drag and drop</p>
               </div>
