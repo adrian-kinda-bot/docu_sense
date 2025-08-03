@@ -1,8 +1,8 @@
 class DocumentsController < ApplicationController
   before_action :ensure_customer_access
   before_action :set_document_collection, only: [ :index, :new, :create ]
-  before_action :set_document, only: [ :show, :edit, :update, :destroy ]
-  before_action :authorize_document, only: [ :show, :edit, :update, :destroy ]
+  before_action :set_document, only: [ :show, :edit, :update, :destroy, :regenerate_embeddings ]
+  before_action :authorize_document, only: [ :show, :edit, :update, :destroy, :regenerate_embeddings ]
 
   def index
     @documents = @document_collection.documents.includes(:document_embeddings).order(:created_at)
