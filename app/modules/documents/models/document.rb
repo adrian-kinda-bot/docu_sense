@@ -44,7 +44,7 @@ module Documents
       end
 
       def can_generate_embeddings?
-        processed? && content.present? && !has_embeddings?
+        content.present? && !has_embeddings?
       end
 
       def schedule_embedding_generation

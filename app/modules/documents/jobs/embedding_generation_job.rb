@@ -41,7 +41,8 @@ module Documents
                 "error_class" => e.class.name,
                 "occurred_at" => Time.current.iso8601
               }
-            )
+            ),
+            status: :failed
           ) if document
         end
       end

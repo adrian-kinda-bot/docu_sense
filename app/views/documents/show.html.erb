@@ -113,6 +113,42 @@
               <% end %>
             </div>
           <% end %>
+
+          <% if @document.failed? %>
+            <div class="pt-4">
+              <div class="bg-red-50 border border-red-200 rounded-lg p-3 mt-2">
+                <div class="flex items-center justify-between">
+
+                  <% if @document.metadata.present? %>
+                    <button type="button"
+                            class="text-xs font-medium text-red-700 hover:text-red-800 underline cursor-pointer"
+                            data-controller="modal-trigger"
+                            data-action="click->modal-trigger#open"
+                            data-modal-trigger-target-id="errorDetailsModal">
+                      View error details
+                    </button>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+
+            <% if @document.metadata.present? %>
+              <!-- Error details modal -->
+              <div id="errorDetailsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50" data-controller="modal" data-modal-target="panel">
+                <div class="flex items-center justify-center min-h-screen p-4">
+                  <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6" data-modal-target="content">
+                    <div class="flex items-center justify-between mb-3">
+                      <h3 class="text-lg font-semibold text-gray-900">Error details</h3>
+                      <button type="button" class="text-gray-500 hover:text-gray-700 cursor-pointer" data-action="click->modal#hide">Close</button>
+                    </div>
+                    <pre class="bg-gray-50 rounded p-4 text-xs text-gray-800 overflow-auto max-h-[60vh]" style="text-wrap: auto;">
+<%= JSON.pretty_generate(@document.metadata) rescue @document.metadata.to_json %>
+                    </pre>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
         </div>
       </div>
     </div>
