@@ -29,7 +29,12 @@ class DocumentsController < ApplicationController
   end
 
   def update
+    remove_file_flag = params.dig(:documents_models_document, :remove_file) || params.dig(:document, :remove_file)
+
     if @document.update(document_params)
+      if ActiveModel::Type::Boolean.new.cast(remove_file_flag)
+        @document.file.purge_later if @document.file.attached?
+      end
       redirect_to document_path(@document), notice: "Document was successfully updated."
     else
       render :edit, status: :unprocessable_entity
@@ -68,6 +73,6 @@ class DocumentsController < ApplicationController
 
   def document_params
     params[:document] = params[:documents_models_document]
-    params.require(:document).permit(:title, :file)
+    params.require(:document).permit(:title, :file, :remove_file)
   end
 end

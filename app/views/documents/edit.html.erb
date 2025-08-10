@@ -1,5 +1,132 @@
 <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
   <div class="mb-8">
+    <nav class="flex" aria-label="Breadcrumb">
+      <ol class="flex items-center space-x-4">
+        <li>
+          <%= link_to "Collections", document_collections_path, class: "text-gray-400 hover:text-gray-500" %>
+        </li>
+        <li>
+          <div class="flex items-center">
+            <svg class="flex-shrink-0 h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+            </svg>
+            <%= link_to @document.document_collection.name, document_collection_path(@document.document_collection), class: "ml-4 text-gray-400 hover:text-gray-500" %>
+          </div>
+        </li>
+        <li>
+          <div class="flex items-center">
+            <svg class="flex-shrink-0 h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+            </svg>
+            <span class="ml-4 text-sm font-medium text-gray-500">Edit Document</span>
+          </div>
+        </li>
+      </ol>
+    </nav>
+
+    <h1 class="mt-4 text-3xl font-bold text-gray-900">Edit Document</h1>
+  </div>
+
+  <div class="bg-white shadow rounded-lg">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h3 class="text-lg font-medium text-gray-900">Document Details</h3>
+    </div>
+
+    <div class="p-6">
+      <%= form_with(model: @document, local: true, class: "space-y-6", html: { multipart: true, data: { controller: "document-upload", action: "submit->document-upload#validate" } }) do |f| %>
+        <% if @document.errors.any? %>
+          <div class="bg-red-50 border border-red-200 rounded-md p-4">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-800">
+                  <%= pluralize(@document.errors.count, "error") %> prohibited this document from being saved:
+                </h3>
+                <div class="mt-2 text-sm text-red-700">
+                  <ul class="list-disc pl-5 space-y-1">
+                    <% @document.errors.full_messages.each do |message| %>
+                      <li><%= message %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+        <div>
+          <%= f.label :title, class: "block text-sm font-medium text-gray-700" %>
+          <%= f.text_field :title, class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm", data: { document_upload_target: "title", action: "input->document-upload#markEdited" } %>
+        </div>
+
+        <div>
+          <%= f.label :file, class: "block text-sm font-medium text-gray-700" %>
+          <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md" data-document-upload-target="dropzone">
+            <div class="space-y-1 text-center w-full">
+              <% if @document.file.attached? %>
+                <!-- Selected-file state for existing attachment -->
+                <div data-document-upload-target="selectedState">
+                  <div class="flex items-center justify-center space-x-3">
+                    <svg class="h-6 w-6 text-emerald-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="text-sm text-gray-700" data-document-upload-target="fileName"><%= @document.file.filename %></span>
+                    <button type="button" class="text-sm text-red-600 hover:text-red-700 underline" data-action="click->document-upload#unattach">Remove</button>
+                  </div>
+                </div>
+                <div class="hidden" data-document-upload-target="defaultState">
+                  <label for="document_file" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                    <span>Upload a file</span>
+                    <%= f.file_field :file, class: "sr-only", accept: ".pdf,.docx,.doc,.txt", id: "document_file", data: { document_upload_target: "file", action: "change->document-upload#prefillTitle" } %>
+                  </label>
+                </div>
+              <% else %>
+                <!-- Default state -->
+                <div data-document-upload-target="defaultState">
+                  <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <div class="flex text-sm text-gray-600 items-center justify-center">
+                    <label for="document_file" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                      <span>Upload a file</span>
+                      <%= f.file_field :file, class: "sr-only", accept: ".pdf,.docx,.doc,.txt", id: "document_file", data: { document_upload_target: "file", action: "change->document-upload#prefillTitle" } %>
+                    </label>
+                    <p class="pl-1">or drag and drop</p>
+                  </div>
+                  <p class="text-xs text-gray-500">PDF, DOCX, DOC, or TXT up to 10MB</p>
+                </div>
+                <div class="hidden" data-document-upload-target="selectedState">
+                  <div class="flex items-center justify-center space-x-3">
+                    <svg class="h-6 w-6 text-emerald-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="text-sm text-gray-700" data-document-upload-target="fileName"></span>
+                    <button type="button" class="text-sm text-red-600 hover:text-red-700 underline" data-action="click->document-upload#unattach">Remove</button>
+                  </div>
+                </div>
+              <% end %>
+
+              <%= f.hidden_field :remove_file, value: "false", data: { document_upload_target: "removeFlag" } %>
+              <p class="mt-2 text-sm text-red-600 hidden" data-document-upload-target="error" aria-live="polite"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+          <%= link_to "Cancel", document_path(@document), class: "inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+          <%= f.submit "Save Changes", class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="mb-8">
     <h1 class="text-3xl font-bold text-gray-900">Edit Document</h1>
     <p class="mt-2 text-gray-600">Update the details for <%= @document.title %></p>
   </div>

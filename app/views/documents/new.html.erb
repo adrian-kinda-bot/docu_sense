@@ -34,7 +34,7 @@
     </div>
 
     <div class="p-6">
-      <%= form_with(model: [@document_collection, @document], url: document_collection_documents_path(@document_collection), local: true, class: "space-y-6", html: { multipart: true, data: { controller: "document-upload" } }) do |f| %>
+      <%= form_with(model: [@document_collection, @document], url: document_collection_documents_path(@document_collection), local: true, class: "space-y-6", html: { multipart: true, data: { controller: "document-upload", action: "submit->document-upload#validate" } }) do |f| %>
         <% if @document.errors.any? %>
           <div class="bg-red-50 border border-red-200 rounded-md p-4">
             <div class="flex">
@@ -66,19 +66,35 @@
 
         <div>
           <%= f.label :file, class: "block text-sm font-medium text-gray-700" %>
-          <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-            <div class="space-y-1 text-center">
-              <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-              <div class="flex text-sm text-gray-600">
-                <label for="document_file" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
-                  <span>Upload a file</span>
-                  <%= f.file_field :file, class: "sr-only", accept: ".pdf,.docx,.doc,.txt", id: "document_file", data: { document_upload_target: "file", action: "change->document-upload#prefillTitle" } %>
-                </label>
-                <p class="pl-1">or drag and drop</p>
+          <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md" data-document-upload-target="dropzone">
+            <div class="space-y-1 text-center w-full">
+              <!-- Default state -->
+              <div data-document-upload-target="defaultState">
+                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                  <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <div class="flex text-sm text-gray-600 items-center justify-center">
+                  <label for="document_file" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                    <span>Upload a file</span>
+                    <%= f.file_field :file, class: "sr-only", accept: ".pdf,.docx,.doc,.txt", id: "document_file", data: { document_upload_target: "file", action: "change->document-upload#prefillTitle" } %>
+                  </label>
+                  <p class="pl-1">or drag and drop</p>
+                </div>
+                <p class="text-xs text-gray-500">PDF, DOCX, DOC, or TXT up to 10MB</p>
               </div>
-              <p class="text-xs text-gray-500">PDF, DOCX, DOC, or TXT up to 10MB</p>
+
+              <!-- Selected-file state -->
+              <div class="hidden" data-document-upload-target="selectedState">
+                <div class="flex items-center justify-center space-x-3">
+                  <svg class="h-6 w-6 text-emerald-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                  </svg>
+                  <span class="text-sm text-gray-700" data-document-upload-target="fileName"></span>
+                  <button type="button" class="text-sm text-red-600 hover:text-red-700 underline" data-action="click->document-upload#unattach">Remove</button>
+                </div>
+              </div>
+
+              <p class="mt-2 text-sm text-red-600 hidden" data-document-upload-target="error" aria-live="polite"></p>
             </div>
           </div>
         </div>
