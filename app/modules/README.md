@@ -109,7 +109,7 @@ command = Chat::Commands::SendChatMessageCommand.new(
 Chat::Jobs::ProcessChatMessageJob.perform_async(message.id)
 
 # Generate embeddings
-Documents::Jobs::EmbeddingGenerationJob.perform_async(document)
+Documents::Jobs::GenerateDocumentEmbeddingJob.perform_async(document)
 ```
 
 ## Benefits of This Structure

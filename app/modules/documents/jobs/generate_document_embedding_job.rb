@@ -1,6 +1,6 @@
 module Documents
   module Jobs
-    class EmbeddingGenerationJob < BaseSidekiqJob
+    class GenerateDocumentEmbeddingJob < BaseSidekiqJob
       sidekiq_options queue: :default, retry: false
 
       def perform(document_id)

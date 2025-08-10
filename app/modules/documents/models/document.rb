@@ -50,7 +50,7 @@ module Documents
       def schedule_embedding_generation
         return unless can_generate_embeddings?
 
-        Documents::Jobs::EmbeddingGenerationJob.perform_async(id)
+        Documents::Jobs::GenerateDocumentEmbeddingJob.perform_async(id)
       end
 
       def extract_text_content
