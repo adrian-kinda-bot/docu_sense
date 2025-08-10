@@ -1,7 +1,7 @@
 module Chat
   module Jobs
-    class ProcessChatMessageJob < ApplicationJob
-      queue_as :default
+    class ProcessChatMessageJob < BaseSidekiqJob
+      sidekiq_options queue: :default, retry: false
 
       def perform(chat_message_id)
         chat_message = Chat::Models::ChatMessage.find(chat_message_id)
@@ -51,9 +51,9 @@ module Chat
         return [] unless chat_session.document_collection.present?
 
         # Get all embeddings from the chat session's document collection
-        embeddings = Documents::DocumentEmbedding.joins(document: :document_collection)
-                                                 .where(document_collections: { id: chat_session.document_collection_id })
-                                                 .where.not(embedding_vector: nil)
+        embeddings = Documents::DocumentEmbedding.joins(
+          document: :document_collection
+        ).where(document_collections: { id: chat_session.document_collection_id }).where.not(embedding_vector: nil)
 
         return [] if embeddings.empty?
 

@@ -106,10 +106,10 @@ command = Chat::Commands::SendChatMessageCommand.new(
 ### Using Domain Jobs
 ```ruby
 # Process chat message
-Chat::Jobs::ProcessChatMessageJob.perform_later(message.id)
+Chat::Jobs::ProcessChatMessageJob.perform_async(message.id)
 
 # Generate embeddings
-Documents::Jobs::EmbeddingGenerationJob.perform_later(document)
+Documents::Jobs::EmbeddingGenerationJob.perform_async(document)
 ```
 
 ## Benefits of This Structure

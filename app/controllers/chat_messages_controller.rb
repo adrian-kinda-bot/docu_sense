@@ -8,7 +8,7 @@ class ChatMessagesController < ApplicationController
 
     if @chat_message.save
       # Process the message and generate AI response
-      Chat::Jobs::ProcessChatMessageJob.perform_later(@chat_message.id)
+      Chat::Jobs::ProcessChatMessageJob.perform_async(@chat_message.id)
 
       respond_to do |format|
         format.turbo_stream {

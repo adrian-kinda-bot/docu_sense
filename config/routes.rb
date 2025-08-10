@@ -1,4 +1,8 @@
+require "sidekiq/web"
+
 Rails.application.routes.draw do
+  mount Sidekiq::Web => "/sidekiq" # access it at http://localhost:3000/sidekiq
+
   devise_for :users, class_name: Users::Models::User.name, controllers: {
     registrations: "users/registrations",
     sessions: "users/sessions"

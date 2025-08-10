@@ -93,7 +93,7 @@
                   <div class="flex space-x-1">
                     <%= link_to "View", document_path(document), class: "text-blue-600 hover:text-blue-800 text-sm font-medium" %>
                     <%= link_to "Edit", edit_document_path(document), class: "text-gray-600 hover:text-gray-800 text-sm font-medium" %>
-                    <%= link_to "Delete", document_path(document), method: :delete, data: { confirm: "Are you sure?" }, class: "text-red-600 hover:text-red-800 text-sm font-medium" %>
+                    <%= link_to "Delete", document_path(document), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, class: "text-red-600 hover:text-red-800 text-sm font-medium" %>
                   </div>
                 </div>
               </div>

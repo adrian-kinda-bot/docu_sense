@@ -1,14 +1,15 @@
 module Documents
   module Jobs
-    class EmbeddingGenerationJob < ApplicationJob
-      queue_as :default
+    class EmbeddingGenerationJob < BaseSidekiqJob
+      sidekiq_options queue: :default, retry: false
 
-      def perform(document)
-        return unless document.can_generate_embeddings?
+      def perform(document_id)
+        document = Documents::Models::Document.find_by(id: document_id)
+        return unless document&.can_generate_embeddings?
 
         begin
           # Split content into chunks
-          chunks = split_content_into_chunks(document.content)
+          chunks = split_content_into_chunks(document.content.squish)
 
           chunks.each_with_index do |chunk, index|
             # Generate embedding using OpenAI
@@ -29,42 +30,32 @@ module Documents
 
           Rails.logger.info "Generated #{chunks.length} embeddings for document #{document.id}"
         rescue => e
-          Rails.logger.error "Embedding generation failed for document #{document.id}: #{e.message}"
+          Rails.logger.error "Embedding generation failed for document #{document_id}: #{e.message}"
         end
       end
 
       private
 
-      def split_content_into_chunks(content, max_chunk_size = 1000)
-        # Simple chunking by sentences
-        sentences = content.split(/[.!?]+/).map(&:strip).reject(&:empty?)
+      def split_content_into_chunks(content, max_chunk_size = 8000)
+        sentences = content.scan(/[^.!?]+[.!?]*/).map(&:strip).reject(&:empty?)
+
         chunks = []
-        current_chunk = ""
+        buffer = []
 
         sentences.each do |sentence|
-          if (current_chunk + sentence).length > max_chunk_size && current_chunk.present?
-            chunks << current_chunk.strip
-            current_chunk = sentence
-          else
-            current_chunk += (current_chunk.empty? ? "" : ". ") + sentence
+          if buffer.join(" ").length + sentence.length > max_chunk_size && buffer.any?
+            chunks << buffer.join(" ")
+            buffer.clear
           end
+          buffer << sentence
         end
 
-        chunks << current_chunk.strip if current_chunk.present?
+        chunks << buffer.join(" ") if buffer.any?
         chunks
       end
 
       def generate_embedding(text)
-        client = OpenAI::Client.new(access_token: Rails.application.credentials.openai[:api_key])
-
-        response = client.embeddings(
-          parameters: {
-            model: "text-embedding-ada-002",
-            input: text
-          }
-        )
-
-        response.dig("data", 0, "embedding")
+        Openai::Services::GenerateEmbeddingsService.new(text).call
       end
 
       def estimate_token_count(text)
@@ -73,4 +64,4 @@ module Documents
       end
     end
   end
-end 
+end

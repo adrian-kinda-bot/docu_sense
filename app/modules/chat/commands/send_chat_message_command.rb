@@ -32,10 +32,10 @@ module Chat
         if chat_message.save
           # Publish event
           Chat::Events::ChatMessageSentEvent.new(chat_message: chat_message, user: user).publish
-          
+
           # Schedule AI processing
-          Chat::Jobs::ProcessChatMessageJob.perform_later(chat_message.id)
-          
+          Chat::Jobs::ProcessChatMessageJob.perform_async(chat_message.id)
+
           true
         else
           errors.merge!(chat_message.errors)
@@ -44,4 +44,4 @@ module Chat
       end
     end
   end
-end 
+end

@@ -19,7 +19,7 @@ class DocumentsController < ApplicationController
     @document = @document_collection.documents.build(document_params)
 
     if @document.save
-      redirect_to @document_collection, notice: "Document was successfully uploaded and is being processed."
+      redirect_to document_url(@document), notice: "Document was successfully uploaded and is being processed."
     else
       render :new, status: :unprocessable_entity
     end
@@ -38,7 +38,7 @@ class DocumentsController < ApplicationController
 
   def destroy
     @document.destroy
-    redirect_to @document.document_collection, notice: "Document was successfully deleted."
+    redirect_to document_collection_url(@document.document_collection), notice: "Document was successfully deleted."
   end
 
   def regenerate_embeddings

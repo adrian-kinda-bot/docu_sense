@@ -1,9 +1,12 @@
 module Documents
   module Jobs
-    class TextExtractionJob < ApplicationJob
-      queue_as :default
+    class TextExtractionJob < BaseSidekiqJob
+      sidekiq_options queue: :default, retry: true
 
-      def perform(document)
+      def perform(document_id)
+        document = Documents::Models::Document.find_by(id: document_id)
+        return unless document
+
         document.update!(status: :processing)
 
         begin
@@ -22,10 +25,10 @@ module Documents
             document.update!(status: :failed)
           end
         rescue => e
-          Rails.logger.error "Text extraction failed for document #{document.id}: #{e.message}"
-          document.update!(status: :failed)
+          Rails.logger.error "Text extraction failed for document #{document_id}: #{e.message}"
+          document.update!(status: :failed) if document
         end
       end
     end
   end
-end 
+end
