@@ -1,0 +1,367 @@
+require:
+  - rubocop-rails
+  - rubocop-capybara
+  - rubocop-factory_bot
+
+# Common configuration.
+AllCops:
+  # For more information: https://docs.rubocop.org/rubocop/versioning.html
+  NewCops: enable
+  # Style guide URLs are not displayed in offense messages by default. Change
+  # behavior by overriding `DisplayStyleGuide`, or by giving the
+  # `-S/--display-style-guide` option.
+  DisplayStyleGuide: true
+  # Extra details are not displayed in offense messages by default. Change
+  # behavior by overriding ExtraDetails, or by giving the
+  # `-E/--extra-details` option.
+  ExtraDetails: true
+  # What MRI version of the Ruby interpreter is the inspected code intended to
+  # run on? (If there is more than one, set this to the lowest version.)
+  # If a value is specified for TargetRubyVersion then it is used. Acceptable
+  # values are specified as a float (i.e. 3.0); the teeny version of Ruby
+  # should not be included. If the project specifies a Ruby version in the
+  # .tool-versions or .ruby-version files, Gemfile or gems.rb file, RuboCop will
+  # try to determine the desired version of Ruby by inspecting the
+  # .tool-versions file first, then .ruby-version, followed by the Gemfile.lock
+  # or gems.locked file. (Although the Ruby version is specified in the Gemfile
+  # or gems.rb file, RuboCop reads the final value from the lock file.) If the
+  # Ruby version is still unresolved, RuboCop will use the oldest officially
+  # supported Ruby version (currently Ruby 2.6).
+  TargetRubyVersion: "2.7"
+  UseCache: false
+  Exclude:
+    - "**/*.yml"
+    - "**/*.rake"
+    - "config/routes.rb"
+    - "db/schema.rb"
+    - "db/data_schema.rb"
+    - "db/migrate/*"
+    - "config/initializers/*"
+
+# Single quotes being faster is hardly measurable and only affects parse time.
+# Enforcing double quotes reduces the times where you need to change them
+# when introducing an interpolation. Use single quotes only if their semantics
+# are needed.
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: double_quotes
+Style/StringLiteralsInInterpolation:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
+# We do not need to support Ruby 1.9, so this is good to use.
+Style/SymbolArray:
+  Enabled: true
+
+# has_key? and has_value? are far more readable than key? and value?
+Style/PreferredHashMethods:
+  Enabled: false
+
+# Prevent from useing assignment in conditions. It'll better not to do it at all,
+# otherwise we can use exceptions here
+Style/ParenthesesAroundCondition:
+  AllowSafeAssignment: false
+Lint/AssignmentInCondition:
+  AllowSafeAssignment: false
+
+Lint/ConstantDefinitionInBlock:
+  Enabled: true
+  Exclude:
+    - "spec/**/*"
+
+# The `no_space` style enforces that hash literals have
+# no surrounding space.
+#
+# bad: { a: 1, b: 2 }
+# good: {a: 1, b: 2}
+#
+Layout/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
+
+# Add a line break before the first argument of a multi-line method argument list
+#
+# bad:
+#   notification = Notification.new(user_id: article.created_by,
+#                                   notification_type: "approval",
+#                                   notification_data: notification_data,
+#                                   sender_id: current_user.id,
+#                                   checked: false)
+# good
+#   notification = Notification.new(
+#     user_id: article.created_by,
+#     notification_type: "approval",
+#     notification_data: notification_data,
+#     sender_id: current_user.id,
+#     checked: false
+#   )
+Layout/FirstMethodArgumentLineBreak:
+  Enabled: true
+
+# Checks for extra/unnecessary whitespace.
+#
+# bad for any configuration:
+# website  = "https://github.com/rubocop/rubocop"
+#
+# good with either AllowBeforeTrailingComments or AllowForAlignment
+# object.method(arg)         # this is a comment
+# another_object.method(arg) # this is another comment
+# some_object.method(arg)    # this is some comment
+Layout/ExtraSpacing:
+  Enabled: true
+  ForceEqualSignAlignment: false
+  AllowBeforeTrailingComments: true
+
+# We need it to be able to declare scoped_collection method inside of controller block of admin resources
+Lint/NestedMethodDefinition:
+  Enabled: true
+  Exclude:
+    - "spec/**/*"
+    - "app/admin/**/*"
+
+Layout/BlockEndNewline:
+  Enabled: false
+
+Lint/EmptyBlock:
+  Enabled: true
+  Exclude:
+    - "spec/factories/**/*"
+
+Lint/EmptyClass:
+  Enabled: true
+  Exclude:
+    - "spec/**/*"
+
+# "classical" style is more readable
+Style/RegexpLiteral:
+  Enabled: false
+  EnforcedStyle: slashes
+
+# Method length
+Metrics/BlockLength:
+  Enabled: true
+  Exclude:
+    - "spec/**/*"
+    - "app/admin/**/*.rb"
+    - "config/**/*"
+    - "**/*_query.rb"
+    - "**/concerns/**/*.rb"
+    - "Gemfile"
+    - "Gemfile.lock"
+
+Layout/LineLength:
+  Enabled: true
+  Max: 125
+  AllowHeredoc: true
+  AllowedPatterns:
+    - '\s+([a-z_0-9]+:\s+)?"[a-z\.\/_0-9]+",?'
+    - "class"
+    - "RSpec.describe"
+    - '^\s*#.*'
+    - "include"
+  Exclude:
+    - "**/*_query.rb"
+    - "app/admin/**/*.rb"
+    - "config/**/*"
+    - "**/configuration.rb"
+    - "**/entities/**/*"
+
+Style/IfUnlessModifier:
+  Enabled: true
+  Exclude:
+    - "**/*_query.rb"
+
+# Method length
+Metrics/AbcSize:
+  Enabled: true
+  Max: 22
+  CountRepeatedAttributes: false
+  Exclude:
+    - "**/*_query.rb"
+    - "app/admin/**/*.rb"
+    - "spec/support/**/*.rb"
+    - "**/configuration.rb"
+
+Metrics/CyclomaticComplexity:
+  Enabled: true
+  Max: 8
+  Exclude:
+    - "**/*_query.rb"
+    - "**/*_indexer.rb"
+    - "**/aggregate.rb"
+
+Metrics/ClassLength:
+  Enabled: true
+  Max: 200
+  CountAsOne: ["hash", "array", "method_call", "heredoc"]
+  Exclude:
+    - "app/admin/**/*.rb"
+
+Metrics/ModuleLength:
+  Enabled: true
+  CountAsOne: ["hash", "array", "method_call"]
+
+# ENV["VAR_NAME"] is synonym to ENV.fetch("VAR_NAME", nil), which is easier to use
+Style/FetchEnvVar:
+  Enabled: false
+
+Style/RedundantSelf:
+  Enabled: false
+
+# It'll better to use custom validation objects
+Rails/SkipsModelValidations:
+  Enabled: false
+
+# We don't need to use this cop, because we have a lot of places where we use Core::V1::Import imported values
+Rails/ReflectionClassName:
+  Enabled: false
+
+# It's fine not to have documentation if we tend write self documenting code
+Style/Documentation:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: true
+  CountAsOne: ["hash", "array", "method_call"]
+  Exclude:
+    - "lib/**/*"
+    - "**/*_query.rb"
+    - "app/admin/**/*.rb"
+    - "**/aggregate.rb"
+
+Metrics/PerceivedComplexity:
+  Enabled: true
+  Exclude:
+    - "lib/**/*"
+    - "**/*_query.rb"
+    - "**/*_indexer.rb"
+    - "app/admin/**/*.rb"
+
+Metrics/ParameterLists:
+  Enabled: true
+  Max: 7
+  Exclude:
+    - "spec/**/*"
+    - "config/**/*"
+    - "db/**/*"
+    - "Gemfile"
+    - "Gemfile.lock"
+
+Rails/I18nLocaleTexts:
+  Enabled: false
+# I don't think OpenStruct is a bad thing, but it's better to use it only in tests
+Style/OpenStructUse:
+  Enabled: false
+
+Naming/VariableNumber:
+  Enabled: true
+  CheckSymbols: false
+
+# Legacy code has `get_` and `set_` methods
+Naming/AccessorMethodName:
+  Enabled: false
+
+Naming/PredicateName:
+  AllowedMethods: ["is_a?", "has_one_attached_with_cropped_and_resized_variants"]
+
+# Avoid problems with Operating Systems that don't use / as the path separator
+Rails/FilePath:
+  EnforcedStyle: arguments
+
+# This cop messes with lambda syntax
+Rails/ScopeArgs:
+  Enabled: false
+
+Rails/TimeZone:
+  Exclude:
+    - "spec/**/*"
+
+Style/Lambda:
+  Enabled: false
+
+# we are aware of this when we use .html_safe method
+Rails/OutputSafety:
+  Enabled: false
+
+# Used for ignoring checking class SystemInfoController < ActionController::Base
+Rails/ApplicationController:
+  Enabled: false
+
+# Rspec configuration
+
+RSpec/NestedGroups:
+  Enabled: true
+  Max: 10
+
+RSpec/VerifiedDoubles:
+  Enabled: false
+
+RSpec/ContextWording:
+  Prefixes: ["when", "with", "without", "within", "if", "unless", "for", "on", "as"]
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/ExpectInHook:
+  Enabled: false
+
+RSpec/StubbedMock:
+  Enabled: false
+
+RSpec/MessageSpies:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: true
+  Max: 20
+
+# Why not? Using let! can be useful if you want to tell what exactly is created by this block
+RSpec/LetSetup:
+  Enabled: false
+
+# these causes errors as rubocop thinks they don't exist anymore
+# Error: unrecognized cop or department Rails/WhereNotWithMultipleConditions found in .rubocop.yml
+# unrecognized cop or department RSpec/NoExpectationExample found in .rubocop.yml
+# unrecognized cop or department RSpec/IndexedLet found in .rubocop.yml
+
+# Rails/WhereNotWithMultipleConditions:
+#   Enabled: false
+# RSpec/NoExpectationExample:
+#   Enabled: false
+# RSpec/IndexedLet:
+#   Enabled: false
+
+RSpec/NamedSubject:
+  Enabled: false
+
+RSpec/AnyInstance:
+  Enabled: false
+
+RSpec/DescribeClass:
+  Enabled: false
+
+RSpec/LeakyConstantDeclaration:
+  Enabled: false
+
+FactoryBot/ExcessiveCreateList:
+  MaxAmount: 30
+
+RSpec/FilePath:
+  Enabled: true
+  Exclude:
+    - "spec/factories/**/*"
+    - "**/*[0-9]*.*" # we do not have a good way of convertion for files with numbers, so RemindAboutSessionStartIn1hJob is excepted to result in remind_about_session_start_in1h_job*_spec.rb file name
+Capybara/SpecificActions:
+  Enabled: false
+
+# I needed to add this because it showed error in traits in users factory
+FactoryBot/FactoryAssociationWithStrategy:
+  Enabled: false
+
+Style/SymbolProc:
+  Enabled: true
+  Exclude:
+    - "**/*_serializer.rb"
+

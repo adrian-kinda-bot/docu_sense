@@ -33,4 +33,4 @@ module Chat
       end
     end
   end
-end 
+end

@@ -5,4 +5,3 @@ Dry::Rails.container do
     controller_helpers
   ]
 end
-
