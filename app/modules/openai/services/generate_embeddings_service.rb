@@ -3,7 +3,7 @@ module Openai
     class GenerateEmbeddingsService
       def initialize(content)
         @content = content
-        @client = OpenAI::Client.new(access_token: ENV["OPEN_AI_API_KEY"])
+        @client = OpenAI::Client.new(access_token: ENV["OPENAI_API_KEY"])
       end
 
       def call

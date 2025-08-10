@@ -15,6 +15,7 @@ module Documents
             # Generate embedding using OpenAI
             embedding = generate_embedding(chunk)
 
+            binding.pry
             # Store embedding
             document.document_embeddings.create!(
               content_chunk: chunk,

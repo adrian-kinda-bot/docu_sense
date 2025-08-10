@@ -9,7 +9,7 @@ class DashboardController < ApplicationController
       total_documents: @customer.documents.count,
       total_collections: @customer.document_collections.count,
       processed_documents: @customer.documents.processed.count,
-      documents_with_embeddings: @customer.documents.with_embeddings.count
+      documents_with_embeddings: @customer.documents.with_embeddings.select(:id).distinct.count
     }
   end
 end
