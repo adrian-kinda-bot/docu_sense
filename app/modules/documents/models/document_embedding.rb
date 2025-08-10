@@ -32,11 +32,7 @@ module Documents
 
       def context_window
         # Return surrounding chunks for better context
-        document.document_embeddings
-                .where(chunk_index: (chunk_index - 1)..(chunk_index + 1))
-                .ordered
-                .pluck(:content_chunk)
-                .join("\n")
+        document.document_embeddings.where(chunk_index: (chunk_index - 1)..(chunk_index + 1)).ordered.pluck(:content_chunk).join("\n")
       end
 
       def to_s

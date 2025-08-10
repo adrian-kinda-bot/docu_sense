@@ -15,14 +15,14 @@ class ChatSessionsController < ApplicationController
 
   def new
     @chat_session = current_user.chat_sessions.build
-    @document_collections = current_user.customer.document_collections.active
+    @document_collections = current_user.customer.document_collections.with_embeddings.active
   end
 
   def create
     @chat_session = current_user.chat_sessions.build(chat_session_params)
 
     if @chat_session.save
-      redirect_to @chat_session, notice: "Chat session was successfully created."
+      redirect_to chat_session_path(@chat_session), notice: "Chat session was successfully created."
     else
       @document_collections = current_user.customer.document_collections.active
       render :new, status: :unprocessable_entity
@@ -33,7 +33,7 @@ class ChatSessionsController < ApplicationController
     if @chat_session.update(chat_session_params)
       respond_to do |format|
         format.json { render json: { success: true, title: @chat_session.title } }
-        format.html { redirect_to @chat_session, notice: "Chat session was successfully updated." }
+        format.html { redirect_to chat_session_path(@chat_session), notice: "Chat session was successfully updated." }
       end
     else
       respond_to do |format|

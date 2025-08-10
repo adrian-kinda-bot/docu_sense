@@ -20,6 +20,7 @@ module Documents
       scope :active, -> { where(status: :active) }
       scope :archived, -> { where(status: :archived) }
       scope :by_category, ->(category) { where(category: category) }
+      scope :with_embeddings, -> { joins(documents: :document_embeddings).where.not(documents: { document_embeddings: { id: nil } }) }
 
       # Business logic methods
       def document_count
