@@ -4,7 +4,7 @@ module Chat
       queue_as :default
 
       def perform(chat_message_id)
-        chat_message = Chat::ChatMessage.find(chat_message_id)
+        chat_message = Chat::Models::ChatMessage.find(chat_message_id)
         return unless chat_message.role == "user"
 
         begin

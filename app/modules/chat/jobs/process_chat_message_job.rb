@@ -4,7 +4,7 @@ module Chat
       queue_as :default
 
       def perform(chat_message_id)
-        chat_message = Chat::ChatMessage.find(chat_message_id)
+        chat_message = Chat::Models::ChatMessage.find(chat_message_id)
         return unless chat_message.role == "user"
 
         begin
@@ -27,6 +27,11 @@ module Chat
 
           # Update chat session
           chat_message.chat_session.touch(:last_activity_at)
+
+          # Generate title if this is the first message and no title exists
+          if chat_message.chat_session.chat_messages.count == 2 && chat_message.chat_session.title.blank?
+            generate_chat_title(chat_message.chat_session, chat_message.content)
+          end
 
         rescue => e
           Rails.logger.error "Chat message processing failed: #{e.message}"
@@ -111,6 +116,37 @@ module Chat
 
         response.dig("choices", 0, "message", "content")
       end
+
+      def generate_chat_title(chat_session, first_message)
+        client = OpenAI::Client.new(access_token: Rails.application.credentials.openai[:api_key])
+
+        prompt = <<~PROMPT
+          Generate a short, descriptive title (maximum 50 characters) for a chat session based on the first user message.
+          The title should be concise and capture the main topic or question.
+
+          First message: "#{first_message}"
+
+          Title:
+        PROMPT
+
+        response = client.chat(
+          parameters: {
+            model: "gpt-3.5-turbo",
+            messages: [
+              { role: "system", content: "You are a helpful assistant that generates concise, descriptive titles for chat sessions." },
+              { role: "user", content: prompt }
+            ],
+            max_tokens: 20,
+            temperature: 0.3
+          }
+        )
+
+        title = response.dig("choices", 0, "message", "content")&.strip&.gsub(/^["']|["']$/, "")
+
+        if title.present? && title.length <= 50
+          chat_session.update(title: title)
+        end
+      end
     end
   end
-end 
+end

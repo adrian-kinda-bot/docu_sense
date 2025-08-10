@@ -45,7 +45,7 @@ modules/
 - **Key Services**: Document processing, text extraction, embedding generation
 
 ### Chat Domain
-- **Models**: `Chat::ChatSession`, `Chat::ChatMessage`
+- **Models**: `Chat::ChatSession`, `Chat::Models::ChatMessage`
 - **Responsibility**: Chat functionality and AI interactions
 - **Key Services**: AI service, message processing, document search
 
@@ -68,7 +68,7 @@ collection = Documents::DocumentCollection.find(1)
 
 # Chat domain
 session = Chat::ChatSession.find(1)
-message = Chat::ChatMessage.find(1)
+message = Chat::Models::ChatMessage.find(1)
 
 # Subscriptions domain
 subscription = Subscriptions::Subscription.find(1)

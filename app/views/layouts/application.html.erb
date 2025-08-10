@@ -23,7 +23,7 @@
       <%= render "shared/sidebar" %>
     <% end %>
 
-    <main class="<%= user_signed_in? ? 'lg:ml-[250px]' : '' %> min-h-screen">
+    <main class="<%= user_signed_in? ? "lg:ml-[250px]" : "" %> min-h-screen">
       <!-- Flash Messages -->
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <% if notice %>
@@ -51,5 +51,121 @@
 
       <%= yield %>
     </main>
+
+    <!-- Title Edit Modal -->
+    <div id="titleEditModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50" data-controller="modal">
+      <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6" data-modal-target="content">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Rename Chat</h3>
+          <form id="titleEditForm" class="space-y-4">
+            <div>
+              <label for="chatTitle" class="block text-sm font-medium text-gray-700 mb-2">Chat Title</label>
+              <input type="text"
+                     id="chatTitle"
+                     name="title"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                     placeholder="Enter chat title">
+            </div>
+            <div class="flex justify-end space-x-3">
+              <button type="button"
+                      class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                      data-action="click->modal#hide">
+                Cancel
+              </button>
+              <button type="submit"
+                      class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700">
+                Save
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+
+    <style>
+      /* Basic dropdown styling */
+      [data-dropdown-target="menu"] {
+        z-index: 50;
+      }
+    </style>
+
+    <script>
+      // Title edit functionality
+      function editChatTitle(chatId, currentTitle) {
+        const modal = document.getElementById('titleEditModal');
+        const titleInput = document.getElementById('chatTitle');
+        const form = document.getElementById('titleEditForm');
+
+        titleInput.value = currentTitle;
+        modal.classList.remove('hidden');
+
+        form.onsubmit = function(e) {
+          e.preventDefault();
+
+          fetch(`/chat_sessions/${chatId}`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+              chat_session: {
+                title: titleInput.value
+              }
+            })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              // Update all title elements for this chat
+              updateChatTitle(chatId, titleInput.value);
+              modal.classList.add('hidden');
+            } else {
+              alert('Failed to update title: ' + (data.errors || 'Unknown error'));
+            }
+          })
+          .catch(error => {
+            console.error('Error updating chat title:', error);
+            alert('Failed to update title. Please try again.');
+          });
+        };
+      }
+
+      // Function to update chat title in all places
+      function updateChatTitle(chatId, newTitle) {
+        // Update in sidebar
+        const chatElement = document.querySelector(`[data-chat-id="${chatId}"]`);
+        if (chatElement) {
+          const titleElement = chatElement.querySelector('.chat-title');
+          if (titleElement) {
+            titleElement.textContent = newTitle;
+            titleElement.title = newTitle;
+          }
+        }
+
+        // Update in main header if this is the current chat
+        const currentChatId = document.querySelector('[data-current-chat-id]')?.dataset.currentChatId;
+        if (chatId === currentChatId) {
+          const mainTitle = document.querySelector('.chat-title');
+          if (mainTitle) {
+            mainTitle.textContent = newTitle;
+          }
+        }
+      }
+
+      // Close modal when clicking outside
+      document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('titleEditModal');
+        if (modal) {
+          modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+              this.classList.add('hidden');
+            }
+          });
+        }
+      });
+    </script>
   </body>
 </html>

@@ -1,7 +1,7 @@
 class ChatSessionsController < ApplicationController
   before_action :ensure_customer_access
-  before_action :set_chat_session, only: [ :show, :destroy ]
-  before_action :authorize_chat_session, only: [ :show, :destroy ]
+  before_action :set_chat_session, only: [ :show, :update, :destroy ]
+  before_action :authorize_chat_session, only: [ :show, :update, :destroy ]
 
   def index
     @chat_sessions = current_user.chat_sessions.includes(:chat_messages).order(updated_at: :desc)
@@ -9,6 +9,7 @@ class ChatSessionsController < ApplicationController
 
   def show
     @chat_messages = @chat_session.chat_messages.order(:created_at)
+    @chat_message = Chat::Models::ChatMessage.new
     @document_collections = current_user.customer.document_collections.active
   end
 
@@ -25,6 +26,20 @@ class ChatSessionsController < ApplicationController
     else
       @document_collections = current_user.customer.document_collections.active
       render :new, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    if @chat_session.update(chat_session_params)
+      respond_to do |format|
+        format.json { render json: { success: true, title: @chat_session.title } }
+        format.html { redirect_to @chat_session, notice: "Chat session was successfully updated." }
+      end
+    else
+      respond_to do |format|
+        format.json { render json: { success: false, errors: @chat_session.errors.full_messages } }
+        format.html { render :edit, status: :unprocessable_entity }
+      end
     end
   end
 

@@ -35,22 +35,22 @@ modules/
 ## Domain Boundaries
 
 ### Users Domain
-- **Models**: `Users::User`, `Users::Customer`
+- **Models**: `Users::Models::User`, `Users::Models::Customer`
 - **Responsibility**: User authentication, authorization, and customer management
 - **Key Services**: User validation, customer domain validation
 
 ### Documents Domain
-- **Models**: `Documents::Document`, `Documents::DocumentCollection`, `Documents::DocumentEmbedding`
+- **Models**: `Documents::Models::Document`, `Documents::Models::DocumentCollection`, `Documents::Models::DocumentEmbedding`
 - **Responsibility**: Document storage, processing, and embedding generation
 - **Key Services**: Document processing, text extraction, embedding generation
 
 ### Chat Domain
-- **Models**: `Chat::ChatSession`, `Chat::ChatMessage`
+- **Models**: `Chat::Models::ChatSession`, `Chat::Models::ChatMessage`
 - **Responsibility**: Chat functionality and AI interactions
 - **Key Services**: AI service, message processing, document search
 
 ### Subscriptions Domain
-- **Models**: `Subscriptions::Subscription`
+- **Models**: `Subscriptions::Models::Subscription`
 - **Responsibility**: Subscription management and billing
 - **Key Services**: Plan validation, usage tracking
 
@@ -63,15 +63,15 @@ user = Users::User.find(1)
 customer = Users::Customer.find(1)
 
 # Documents domain
-document = Documents::Document.find(1)
-collection = Documents::DocumentCollection.find(1)
+document = Documents::Models::Document.find(1)
+collection = Documents::Models::DocumentCollection.find(1)
 
 # Chat domain
 session = Chat::ChatSession.find(1)
-message = Chat::ChatMessage.find(1)
+message = Chat::Models::ChatMessage.find(1)
 
 # Subscriptions domain
-subscription = Subscriptions::Subscription.find(1)
+subscription = Subscriptions::Models::Subscription.find(1)
 ```
 
 ### Using Domain Services
@@ -93,16 +93,14 @@ command = Documents::Commands::UploadDocumentCommand.new(
   file: uploaded_file,
   document_collection_id: collection.id,
   user_id: user.id
-)
-command.execute
+).execute
 
 # Send chat message
 command = Chat::Commands::SendChatMessageCommand.new(
   content: "Hello",
   chat_session_id: session.id,
   user_id: user.id
-)
-command.execute
+).execute
 ```
 
 ### Using Domain Jobs
@@ -127,4 +125,4 @@ Documents::Jobs::EmbeddingGenerationJob.perform_later(document)
 - Controllers and views remain in the `app/` directory for Rails conventions
 - Models, services, commands, jobs, and events are moved to the `modules/` directory
 - All references to models have been updated to use the new namespaced versions
-- The autoload configuration ensures Rails can find all the new classes 
+- The autoload configuration ensures Rails can find all the new classes

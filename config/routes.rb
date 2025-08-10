@@ -25,7 +25,7 @@ Rails.application.routes.draw do
   end
 
   # Chat Sessions
-  resources :chat_sessions, only: [ :index, :show, :new, :create, :destroy ] do
+  resources :chat_sessions, only: [ :index, :show, :new, :create, :update, :destroy ] do
     resources :chat_messages, only: [ :create ]
   end
 
