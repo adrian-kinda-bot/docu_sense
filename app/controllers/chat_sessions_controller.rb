@@ -15,7 +15,7 @@ class ChatSessionsController < ApplicationController
 
   def new
     @chat_session = current_user.chat_sessions.build
-    @document_collections = current_user.customer.document_collections.with_embeddings.active
+    @document_collections = current_user.customer.document_collections.with_embeddings.active.distinct
   end
 
   def create
