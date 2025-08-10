@@ -33,7 +33,7 @@
     </div>
 
     <div class="p-6">
-      <%= form_with(model: @document, local: true, class: "space-y-6", html: { multipart: true, data: { controller: "document-upload", action: "submit->document-upload#validate" } }) do |f| %>
+      <%= form_with(model: @document, url: document_path(@document), method: :patch, local: true, class: "space-y-6", html: { multipart: true, data: { controller: "document-upload", action: "submit->document-upload#validate" } }) do |f| %>
         <% if @document.errors.any? %>
           <div class="bg-red-50 border border-red-200 rounded-md p-4">
             <div class="flex">
