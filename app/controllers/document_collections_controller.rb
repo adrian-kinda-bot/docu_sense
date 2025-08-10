@@ -30,7 +30,7 @@ class DocumentCollectionsController < ApplicationController
 
   def update
     if @document_collection.update(document_collection_params)
-      redirect_to @document_collection, notice: "Document collection was successfully updated."
+      redirect_to document_collections_path(@document_collection), notice: "Document collection was successfully updated."
     else
       render :edit, status: :unprocessable_entity
     end

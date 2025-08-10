@@ -31,6 +31,18 @@ module Documents
           Rails.logger.info "Generated #{chunks.length} embeddings for document #{document.id}"
         rescue => e
           Rails.logger.error "Embedding generation failed for document #{document_id}: #{e.message}"
+          # Record error on document metadata
+          new_metadata = (document.metadata || {}).dup
+          document.update!(
+            metadata: new_metadata.merge(
+              "last_error" => {
+                "step" => "embedding_generation",
+                "message" => e.message,
+                "error_class" => e.class.name,
+                "occurred_at" => Time.current.iso8601
+              }
+            )
+          ) if document
         end
       end
 

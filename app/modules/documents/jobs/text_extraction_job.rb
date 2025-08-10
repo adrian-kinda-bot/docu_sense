@@ -22,11 +22,34 @@ module Documents
             # Schedule embedding generation
             document.schedule_embedding_generation
           else
-            document.update!(status: :failed)
+            new_metadata = (document.metadata || {}).dup
+            document.update!(
+              status: :failed,
+              metadata: new_metadata.merge(
+                "last_error" => {
+                  "step" => "text_extraction",
+                  "message" => "No content extracted",
+                  "occurred_at" => Time.current.iso8601
+                }
+              )
+            )
           end
         rescue => e
           Rails.logger.error "Text extraction failed for document #{document_id}: #{e.message}"
-          document.update!(status: :failed) if document
+          if document
+            new_metadata = (document.metadata || {}).dup
+            document.update!(
+              status: :failed,
+              metadata: new_metadata.merge(
+                "last_error" => {
+                  "step" => "text_extraction",
+                  "message" => e.message,
+                  "error_class" => e.class.name,
+                  "occurred_at" => Time.current.iso8601
+                }
+              )
+            )
+          end
         end
       end
     end

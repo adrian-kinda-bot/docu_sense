@@ -34,7 +34,7 @@
     </div>
 
     <div class="p-6">
-      <%= form_with(model: [@document_collection, @document], url: document_collection_documents_path(@document_collection), local: true, class: "space-y-6", html: { multipart: true }) do |f| %>
+      <%= form_with(model: [@document_collection, @document], url: document_collection_documents_path(@document_collection), local: true, class: "space-y-6", html: { multipart: true, data: { controller: "document-upload" } }) do |f| %>
         <% if @document.errors.any? %>
           <div class="bg-red-50 border border-red-200 rounded-md p-4">
             <div class="flex">
@@ -61,7 +61,7 @@
 
         <div>
           <%= f.label :title, class: "block text-sm font-medium text-gray-700" %>
-          <%= f.text_field :title, class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm", placeholder: "Document title (optional - will use filename if not provided)" %>
+          <%= f.text_field :title, class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm", placeholder: "Document title (optional - will use filename if not provided)", data: { document_upload_target: "title", action: "input->document-upload#markEdited" } %>
         </div>
 
         <div>
@@ -74,7 +74,7 @@
               <div class="flex text-sm text-gray-600">
                 <label for="document_file" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
                   <span>Upload a file</span>
-                  <%= f.file_field :file, class: "sr-only", accept: ".pdf,.docx,.doc,.txt", id: "document_file" %>
+                  <%= f.file_field :file, class: "sr-only", accept: ".pdf,.docx,.doc,.txt", id: "document_file", data: { document_upload_target: "file", action: "change->document-upload#prefillTitle" } %>
                 </label>
                 <p class="pl-1">or drag and drop</p>
               </div>
