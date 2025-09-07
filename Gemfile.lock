@@ -283,6 +283,7 @@ GEM
       racc (~> 1.4)
     nokogiri (1.18.9-x86_64-linux-musl)
       racc (~> 1.4)
+    observable (0.1.0)
     orm_adapter (0.5.0)
     ostruct (0.6.3)
     parallel (1.27.0)
@@ -528,6 +529,7 @@ DEPENDENCIES
   jbuilder
   kamal
   kaminari
+  observable
   pdf-reader
   pg (~> 1.6)
   propshaft

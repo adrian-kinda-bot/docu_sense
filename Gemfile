@@ -58,6 +58,8 @@ gem "ruby-openai"
 gem "devise"
 gem "pundit"
 
+gem "observable"
+
 # Background job processing
 gem "sidekiq"
 
