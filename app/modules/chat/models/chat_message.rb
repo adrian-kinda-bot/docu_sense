@@ -53,6 +53,20 @@ module Chat
       def to_s
         "#{role.humanize}: #{truncated_content}"
       end
+
+      after_commit :broadcast_to_session, on: :create
+
+      private
+
+      def broadcast_to_session
+        # Use Turbo Streams to update the messages list for this chat session
+        Turbo::StreamsChannel.broadcast_replace_to(
+          "chat_session_#{chat_session_id}",
+          target: "chat_messages",
+          partial: "chat_sessions/messages",
+          locals: { chat_messages: chat_session.chat_messages.ordered }
+        )
+      end
     end
   end
 end

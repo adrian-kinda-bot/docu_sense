@@ -1,0 +1,60 @@
+<% if chat_messages.any? %>
+  <% chat_messages.each do |message| %>
+    <div class="flex <%= message.role == "user" ? "justify-end" : "justify-start" %>">
+      <div class="max-w-2xl <%= message.role == "user" ? "bg-gradient-to-br from-blue-600 to-blue-700 text-white" : "bg-white text-gray-900 border border-gray-200" %> rounded-2xl px-6 py-4 shadow-sm">
+        <div class="flex items-center space-x-3 mb-3">
+          <div class="w-8 h-8 rounded-full flex items-center justify-center <%= message.role == "user" ? "bg-blue-500/20" : "bg-gray-200" %>">
+            <% if message.role == "user" %>
+              <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+              </svg>
+            <% else %>
+              <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd" />
+              </svg>
+            <% end %>
+          </div>
+          <div>
+            <div class="font-semibold text-sm">
+              <%= message.role == "user" ? "You" : "AI Assistant" %>
+            </div>
+            <div class="text-xs opacity-75">
+              <%= message.created_at.strftime("%I:%M %p") %>
+            </div>
+          </div>
+        </div>
+        <div class="prose prose-sm max-w-none">
+          <div class="whitespace-pre-wrap leading-relaxed"><%= message.content %></div>
+        </div>
+        <% if message.metadata&.dig("sources")&.any? %>
+          <div class="mt-4 pt-4 border-t border-gray-300/30">
+            <div class="text-xs font-medium opacity-75 mb-2">Sources:</div>
+            <div class="text-xs opacity-75 space-y-1">
+              <% message.metadata["sources"].each do |source| %>
+                <div class="flex items-center space-x-2">
+                  <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
+                  </svg>
+                  <span><%= source %></span>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+<% else %>
+  <div class="flex items-center justify-center h-full">
+    <div class="text-center">
+      <div class="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+        </svg>
+      </div>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">Start a conversation</h3>
+      <p class="text-gray-500">Ask questions about your documents to get started.</p>
+    </div>
+  </div>
+<% end %>
+

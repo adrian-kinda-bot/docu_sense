@@ -5,19 +5,14 @@ class ChatMessagesController < ApplicationController
 
   def create
     @chat_message = @chat_session.chat_messages.build(chat_message_params)
+    @chat_message.message_type ||= "question"
 
     if @chat_message.save
       # Process the message and generate AI response
       Chat::Jobs::ProcessChatMessageJob.perform_async(@chat_message.id)
 
       respond_to do |format|
-        format.turbo_stream {
-          render turbo_stream: turbo_stream.replace(
-            "chat_messages",
-            partial: "chat_sessions/messages",
-            locals: { chat_messages: @chat_session.chat_messages.reload.order(:created_at) }
-          )
-        }
+        format.turbo_stream { head :ok }
         format.html { redirect_to @chat_session }
       end
     else
@@ -47,6 +42,7 @@ class ChatMessagesController < ApplicationController
   end
 
   def chat_message_params
-    params.require(:chat_message).permit(:content, :role)
+    params[:chat_message] = params[:chat_models_chat_message].permit(:content, :role)
+    params.require(:chat_message).permit(:content, :role).merge(user_id: current_user.id)
   end
 end

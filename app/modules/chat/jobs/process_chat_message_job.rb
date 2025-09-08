@@ -14,11 +14,12 @@ module Chat
           # Generate AI response
           response = generate_ai_response(chat_message.content, relevant_chunks)
 
-          # Create assistant response
+          # Create assistant response (associate to session user for ownership)
           chat_message.chat_session.chat_messages.create!(
             content: response,
             role: "assistant",
             message_type: "answer",
+            user: chat_message.chat_session.user,
             metadata: {
               relevant_chunks_count: relevant_chunks.length,
               sources: relevant_chunks.map { |c| c.document.title }.uniq
@@ -36,11 +37,12 @@ module Chat
         rescue => e
           Rails.logger.error "Chat message processing failed: #{e.message}"
 
-          # Create error response
+          # Create error response (associate to session user)
           chat_message.chat_session.chat_messages.create!(
             content: "I'm sorry, I encountered an error while processing your request. Please try again.",
             role: "assistant",
-            message_type: "text"
+            message_type: "text",
+            user: chat_message.chat_session.user
           )
         end
       end
