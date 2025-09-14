@@ -1,16 +1,16 @@
 # Clear existing data
 puts "Clearing existing data..."
-User.destroy_all
-Customer.destroy_all
-DocumentCollection.destroy_all
-Document.destroy_all
-ChatSession.destroy_all
-ChatMessage.destroy_all
+Users::Models::User.destroy_all
+Users::Models::Customer.destroy_all
+Documents::Models::DocumentCollection.destroy_all
+Documents::Models::Document.destroy_all
+Chat::Models::ChatSession.destroy_all
+Chat::Models::ChatMessage.destroy_all
 
 # Create sample customers
 puts "Creating customers..."
 
-acme_corp = Customer.create!(
+acme_corp = Users::Models::Customer.create!(
   name: "Acme Corporation",
   email: "admin@acme.com",
   domain: "acme.com",
@@ -21,7 +21,7 @@ acme_corp = Customer.create!(
   website: "https://acme.com"
 )
 
-legal_firm = Customer.create!(
+legal_firm = Users::Models::Customer.create!(
   name: "Smith & Associates Law Firm",
   email: "contact@smithlaw.com",
   domain: "smithlaw.com",
@@ -36,7 +36,7 @@ legal_firm = Customer.create!(
 puts "Creating users..."
 
 # Acme Corp users
-admin_user = User.create!(
+admin_user = Users::Models::User.create!(
   email: "admin@acme.com",
   password: "password123",
   password_confirmation: "password123",
@@ -47,7 +47,7 @@ admin_user = User.create!(
   confirmed_at: Time.current
 )
 
-regular_user = User.create!(
+regular_user = Users::Models::User.create!(
   email: "user@acme.com",
   password: "password123",
   password_confirmation: "password123",
@@ -58,7 +58,7 @@ regular_user = User.create!(
   confirmed_at: Time.current
 )
 
-read_only_user = User.create!(
+read_only_user = Users::Models::User.create!(
   email: "viewer@acme.com",
   password: "password123",
   password_confirmation: "password123",
@@ -70,7 +70,7 @@ read_only_user = User.create!(
 )
 
 # Law firm users
-lawyer_user = User.create!(
+lawyer_user = Users::Models::User.create!(
   email: "lawyer@smithlaw.com",
   password: "password123",
   password_confirmation: "password123",
@@ -85,7 +85,7 @@ lawyer_user = User.create!(
 puts "Creating document collections..."
 
 # Acme Corp collections
-hr_collection = DocumentCollection.create!(
+hr_collection = Documents::Models::DocumentCollection.create!(
   name: "HR Policies",
   description: "Human resources policies and procedures",
   category: "hr",
@@ -94,7 +94,7 @@ hr_collection = DocumentCollection.create!(
   customer: acme_corp
 )
 
-tech_collection = DocumentCollection.create!(
+tech_collection = Documents::Models::DocumentCollection.create!(
   name: "Technical Documentation",
   description: "Technical specifications and documentation",
   category: "technical",
@@ -104,7 +104,7 @@ tech_collection = DocumentCollection.create!(
 )
 
 # Law firm collections
-legal_collection = DocumentCollection.create!(
+legal_collection = Documents::Models::DocumentCollection.create!(
   name: "Legal Documents",
   description: "Legal contracts and agreements",
   category: "legal",
@@ -117,7 +117,7 @@ legal_collection = DocumentCollection.create!(
 puts "Creating sample documents..."
 
 # Sample HR document
-hr_doc = Document.create!(
+hr_doc = Documents::Models::Document.create!(
   title: "Employee Handbook",
   file_type: "pdf",
   file_size: 1024000,
@@ -128,7 +128,7 @@ hr_doc = Document.create!(
 )
 
 # Sample technical document
-tech_doc = Document.create!(
+tech_doc = Documents::Models::Document.create!(
   title: "API Documentation",
   file_type: "pdf",
   file_size: 2048000,
@@ -139,7 +139,7 @@ tech_doc = Document.create!(
 )
 
 # Sample legal document
-legal_doc = Document.create!(
+legal_doc = Documents::Models::Document.create!(
   title: "Service Agreement Template",
   file_type: "docx",
   file_size: 512000,
@@ -153,7 +153,7 @@ legal_doc = Document.create!(
 puts "Creating sample chat sessions..."
 
 # Acme Corp chat session
-acme_chat = ChatSession.create!(
+acme_chat = Chat::Models::ChatSession.create!(
   title: "HR Policy Questions",
   status: "active",
   last_activity_at: Time.current,
@@ -162,7 +162,7 @@ acme_chat = ChatSession.create!(
 )
 
 # Add some chat messages
-ChatMessage.create!(
+Chat::Models::ChatMessage.create!(
   content: "What are the company's vacation policies?",
   role: "user",
   message_type: "question",
@@ -170,7 +170,7 @@ ChatMessage.create!(
   user: regular_user
 )
 
-ChatMessage.create!(
+Chat::Models::ChatMessage.create!(
   content: "Based on the Employee Handbook, Acme Corporation provides 20 days of paid vacation per year for full-time employees. Employees must submit vacation requests at least 2 weeks in advance and receive approval from their manager. Vacation days do not roll over to the next year and must be used within the calendar year.",
   role: "assistant",
   message_type: "answer",
@@ -179,7 +179,7 @@ ChatMessage.create!(
 )
 
 # Law firm chat session
-legal_chat = ChatSession.create!(
+legal_chat = Chat::Models::ChatSession.create!(
   title: "Contract Review",
   status: "active",
   last_activity_at: Time.current,
@@ -187,7 +187,7 @@ legal_chat = ChatSession.create!(
   document_collection: legal_collection
 )
 
-ChatMessage.create!(
+Chat::Models::ChatMessage.create!(
   content: "What are the standard terms in our service agreement?",
   role: "user",
   message_type: "question",
@@ -195,7 +195,7 @@ ChatMessage.create!(
   user: lawyer_user
 )
 
-ChatMessage.create!(
+Chat::Models::ChatMessage.create!(
   content: "According to the Service Agreement Template, the standard terms include: 1) Service scope and deliverables, 2) Payment terms (net 30 days), 3) Liability limitations, 4) Confidentiality provisions, 5) Termination clauses (30-day notice required), and 6) Dispute resolution procedures. These terms should be reviewed and customized for each client engagement.",
   role: "assistant",
   message_type: "answer",
@@ -204,12 +204,12 @@ ChatMessage.create!(
 )
 
 puts "Seed data created successfully!"
-puts "Created #{Customer.count} customers"
-puts "Created #{User.count} users"
-puts "Created #{DocumentCollection.count} document collections"
-puts "Created #{Document.count} documents"
-puts "Created #{ChatSession.count} chat sessions"
-puts "Created #{ChatMessage.count} chat messages"
+puts "Created #{Users::Models::Customer.count} customers"
+puts "Created #{Users::Models::User.count} users"
+puts "Created #{Documents::Models::DocumentCollection.count} document collections"
+puts "Created #{Documents::Models::Document.count} documents"
+puts "Created #{Chat::Models::ChatSession.count} chat sessions"
+puts "Created #{Chat::Models::ChatMessage.count} chat messages"
 
 puts "\nSample login credentials:"
 puts "Acme Corp Admin: admin@acme.com / password123"
