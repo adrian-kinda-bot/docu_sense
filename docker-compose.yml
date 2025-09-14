@@ -16,6 +16,41 @@ services:
       retries: 5
     restart: unless-stopped
 
+  postgres:
+    image: postgres:16-alpine
+    container_name: docu_sense-postgres
+    environment:
+      POSTGRES_DB: docu_sense_development
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  sidekiq:
+    build: .
+    container_name: docu_sense-sidekiq
+    command: bundle exec sidekiq -C /app/config/sidekiq.yml
+    depends_on:
+      - redis
+      - postgres
+    environment:
+      - RAILS_ENV=development
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/docu_sense_development
+    volumes:
+      - .:/app
+    restart: unless-stopped
+
 volumes:
   redis_data:
+    driver: local
+  postgres_data:
     driver: local

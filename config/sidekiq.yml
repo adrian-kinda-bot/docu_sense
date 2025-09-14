@@ -1,0 +1,18 @@
+:queues:
+  - text_extraction_queue
+  - embeddings_queue
+  - messages_queue
+
+:concurrency: 5
+
+:timeout: 25
+
+:retry: 3
+
+:pidfile: tmp/pids/sidekiq.pid
+
+:logfile: log/sidekiq.log
+
+:environment: development
+
+:daemon: false

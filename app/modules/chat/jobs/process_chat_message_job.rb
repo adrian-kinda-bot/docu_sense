@@ -1,7 +1,7 @@
 module Chat
   module Jobs
     class ProcessChatMessageJob < BaseSidekiqJob
-      sidekiq_options queue: :default, retry: false
+      sidekiq_options queue: :messages_queue, retry: true
 
       def perform(chat_message_id)
         chat_message = Chat::Models::ChatMessage.find(chat_message_id)

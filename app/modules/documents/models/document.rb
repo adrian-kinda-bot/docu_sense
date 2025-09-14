@@ -21,6 +21,12 @@ module Documents
       before_validation :set_file_attributes, on: :create
       after_create :schedule_text_extraction
 
+      after_commit :schedule_embedding_generation, on: :create
+
+      def schedule_embedding_generation
+        Documents::Jobs::GenerateDocumentEmbeddingJob.perform_async(id)
+      end
+
       # Scopes
       scope :processed, -> { where(status: :processed) }
       scope :with_embeddings, -> { joins(:document_embeddings) }

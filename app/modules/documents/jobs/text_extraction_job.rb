@@ -1,7 +1,7 @@
 module Documents
   module Jobs
     class TextExtractionJob < BaseSidekiqJob
-      sidekiq_options queue: :default, retry: true
+      sidekiq_options queue: :text_extraction_queue, retry: true
 
       def perform(document_id)
         document = Documents::Models::Document.find_by(id: document_id)

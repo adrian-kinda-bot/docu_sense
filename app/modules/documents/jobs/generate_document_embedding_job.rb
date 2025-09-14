@@ -1,7 +1,7 @@
 module Documents
   module Jobs
     class GenerateDocumentEmbeddingJob < BaseSidekiqJob
-      sidekiq_options queue: :default, retry: false
+      sidekiq_options queue: :embeddings_queue, retry: true
 
       def perform(document_id)
         document = Documents::Models::Document.find_by(id: document_id)
