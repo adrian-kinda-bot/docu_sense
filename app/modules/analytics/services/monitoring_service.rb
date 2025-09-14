@@ -147,9 +147,6 @@ module Analytics
 
       def log_metrics(event_type, metrics)
         Rails.logger.info "[METRICS:#{event_type.upcase}] #{metrics.to_json}"
-
-        # In production, you might want to send these to a dedicated metrics service
-        # like DataDog, New Relic, or Prometheus
       end
 
       def update_embedding_stats(metrics)
