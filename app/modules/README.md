@@ -35,21 +35,25 @@ modules/
 ## Domain Boundaries
 
 ### Users Domain
+
 - **Models**: `Users::Models::User`, `Users::Models::Customer`
 - **Responsibility**: User authentication, authorization, and customer management
 - **Key Services**: User validation, customer domain validation
 
 ### Documents Domain
+
 - **Models**: `Documents::Models::Document`, `Documents::Models::DocumentCollection`, `Documents::Models::DocumentEmbedding`
 - **Responsibility**: Document storage, processing, and embedding generation
 - **Key Services**: Document processing, text extraction, embedding generation
 
 ### Chat Domain
+
 - **Models**: `Chat::Models::ChatSession`, `Chat::Models::ChatMessage`
 - **Responsibility**: Chat functionality and AI interactions
 - **Key Services**: AI service, message processing, document search
 
 ### Subscriptions Domain
+
 - **Models**: `Subscriptions::Models::Subscription`
 - **Responsibility**: Subscription management and billing
 - **Key Services**: Plan validation, usage tracking
@@ -57,6 +61,7 @@ modules/
 ## Usage Examples
 
 ### Using Domain Models
+
 ```ruby
 # Users domain
 user = Users::User.find(1)
@@ -75,17 +80,19 @@ subscription = Subscriptions::Models::Subscription.find(1)
 ```
 
 ### Using Domain Services
+
 ```ruby
 # AI service for chat
 ai_service = Chat::Services::AiService.instance
 response = ai_service.generate_chat_response(messages, context)
 
 # Document processing
-processor = Documents::Services::DocumentProcessingService.instance
+processor = Documents::Services::ExtractTextFromDocumentService.instance
 result = processor.process_document(document)
 ```
 
 ### Using Domain Commands
+
 ```ruby
 # Upload document
 command = Documents::Commands::UploadDocumentCommand.new(
@@ -104,6 +111,7 @@ command = Chat::Commands::SendChatMessageCommand.new(
 ```
 
 ### Using Domain Jobs
+
 ```ruby
 # Process chat message
 Chat::Jobs::ProcessChatMessageJob.perform_async(message.id)

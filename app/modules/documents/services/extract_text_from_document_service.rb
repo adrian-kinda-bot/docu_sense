@@ -1,6 +1,6 @@
 module Documents
   module Services
-    class DocumentProcessingService
+    class ExtractTextFromDocumentService
       include Singleton
 
       SUPPORTED_FORMATS = %w[txt pdf docx doc].freeze

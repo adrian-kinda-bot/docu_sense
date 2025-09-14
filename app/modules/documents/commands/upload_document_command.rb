@@ -20,7 +20,7 @@ module Documents
         return false unless user.can_access_collection?(document_collection)
 
         # Validate file
-        validation_result = Documents::Services::DocumentProcessingService.instance.validate_file(file)
+        validation_result = Documents::Services::ExtractTextFromDocumentService.instance.validate_file(file)
         return false unless validation_result[:valid]
 
         # Create document
