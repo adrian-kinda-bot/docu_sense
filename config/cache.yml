@@ -1,16 +1,20 @@
 default: &default
   store_options:
-    # Cap age of oldest cache entry to fulfill retention policies
-    # max_age: <%= 60.days.to_i %>
-    max_size: <%= 256.megabytes %>
-    namespace: <%= Rails.env %>
+    # Redis-specific cache settings
+    expires_in: <%= 90.minutes.to_i %>
+    namespace: docu_sense_cache_<%= Rails.env %>
+    pool_size: <%= ENV.fetch("RAILS_MAX_THREADS", 5).to_i %>
+    pool_timeout: 5
+    reconnect_attempts: 1
 
 development:
+  url: <%= ENV.fetch("REDIS_URL", "redis://localhost:6379/0") %>
   <<: *default
 
 test:
+  url: <%= ENV.fetch("REDIS_URL", "redis://localhost:6379/1") %>
   <<: *default
 
 production:
-  database: cache
+  url: <%= ENV.fetch("REDIS_URL", "redis://redis:6379/0") %>
   <<: *default

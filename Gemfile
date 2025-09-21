@@ -63,6 +63,9 @@ gem "observable"
 # Background job processing
 gem "sidekiq"
 
+# Redis for caching
+gem "redis", "~> 5.0"
+
 # API documentation
 gem "rswag-api"
 gem "rswag-ui"
