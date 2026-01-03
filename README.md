@@ -18,3 +18,10 @@
 │   Generation    │◀───│   Layer          │
 └─────────────────┘     └─────────────────┘
 ```
+
+## Startign the app
+
+```bash
+docker compose up
+rails s
+```

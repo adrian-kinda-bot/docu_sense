@@ -8,8 +8,9 @@ class OptimizeDocumentEmbeddings < ActiveRecord::Migration[8.0]
     add_index :document_embeddings, [ :document_id, :chunk_index ], name: 'index_embeddings_on_document_and_chunk'
     add_index :document_embeddings, [ :document_id, :token_count ], name: 'index_embeddings_on_document_and_tokens'
 
-    # Add index for similarity searches (will be more useful with pgvector later)
-    add_index :document_embeddings, :embedding_vector, using: :gin, name: 'index_embeddings_on_vector'
+    # Note: Vector similarity index will be added when pgvector is installed
+    # For now, embedding_vector is stored as text and GIN indexes require operator classes
+    # When pgvector is set up, change column type to vector and add appropriate index (ivfflat/hnsw)
 
     # Update existing documents with their embedding counts
     reversible do |dir|

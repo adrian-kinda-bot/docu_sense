@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   redis:
     image: redis:7-alpine
@@ -17,18 +15,18 @@ services:
     restart: unless-stopped
 
   postgres:
-    image: postgres:16-alpine
+    image: pgvector/pgvector:pg16
     container_name: docu_sense-postgres
     environment:
       POSTGRES_DB: docu_sense_development
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: root
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U root"]
       interval: 5s
       timeout: 3s
       retries: 5
@@ -44,7 +42,7 @@ services:
     environment:
       - RAILS_ENV=development
       - REDIS_URL=redis://redis:6379/0
-      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/docu_sense_development
+      - DATABASE_URL=postgresql://root:root@postgres:5432/docu_sense_development
     volumes:
       - .:/app
     restart: unless-stopped

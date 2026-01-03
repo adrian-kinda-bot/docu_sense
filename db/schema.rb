@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_02_072646) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_14_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -118,6 +118,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_02_072646) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["chunk_index"], name: "index_document_embeddings_on_chunk_index"
+    t.index ["document_id", "chunk_index"], name: "index_embeddings_on_document_and_chunk"
+    t.index ["document_id", "token_count"], name: "index_embeddings_on_document_and_tokens"
     t.index ["document_id"], name: "index_document_embeddings_on_document_id"
     t.index ["metadata"], name: "index_document_embeddings_on_metadata", using: :gin
     t.index ["token_count"], name: "index_document_embeddings_on_token_count"
@@ -136,7 +138,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_02_072646) do
     t.jsonb "metadata", default: {}
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "embeddings_count", default: 0, null: false
     t.index ["document_collection_id"], name: "index_documents_on_document_collection_id"
+    t.index ["embeddings_count"], name: "index_documents_on_embeddings_count"
     t.index ["file_type"], name: "index_documents_on_file_type"
     t.index ["metadata"], name: "index_documents_on_metadata", using: :gin
     t.index ["processed_at"], name: "index_documents_on_processed_at"

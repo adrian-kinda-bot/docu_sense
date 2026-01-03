@@ -26,7 +26,7 @@ module DocusenseConfig
     # Rate Limiting
     requests_per_minute: 50,
     rate_limit_delay: 0.1
-  }.freeze
+  }
 
   # Document Processing Configuration
   DOCUMENT_CONFIG = {
@@ -86,7 +86,7 @@ module DocusenseConfig
     # Performance
     cache_warming_enabled: true,
     async_cache_updates: true
-  }.freeze
+  }
 
   # Monitoring and Analytics Configuration
   MONITORING_CONFIG = {
@@ -109,7 +109,7 @@ module DocusenseConfig
     daily_reports: true,
     weekly_summaries: true,
     error_notifications: true
-  }.freeze
+  }
 
   # Security Configuration
   SECURITY_CONFIG = {
@@ -127,7 +127,7 @@ module DocusenseConfig
     validate_file_types: true,
     scan_for_malware: false, # Set to true in production
     content_safety_checks: true
-  }.freeze
+  }
 
   # Performance Configuration
   PERFORMANCE_CONFIG = {
@@ -149,7 +149,7 @@ module DocusenseConfig
     preload_embeddings: false,
     eager_load_associations: true,
     use_database_indexes: true
-  }.freeze
+  }
 
   # Feature Flags
   FEATURE_FLAGS = {
@@ -174,7 +174,7 @@ module DocusenseConfig
     enable_pgvector: false, # Set to true when pgvector is installed
     enable_multi_modal: false,
     enable_fine_tuning: false
-  }.freeze
+  }
 
   # Environment-specific overrides
   case Rails.env
