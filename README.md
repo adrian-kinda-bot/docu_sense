@@ -19,7 +19,7 @@
 └─────────────────┘     └─────────────────┘
 ```
 
-## Startign the app
+## Starting the app
 
 ```bash
 docker compose up
